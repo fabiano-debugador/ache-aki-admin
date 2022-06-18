@@ -8,7 +8,7 @@ function App() {
     <Template>
       <Routes>
         <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="perfil" element={<Profile />} />
+        <Route path="/perfil" element={<Profile />} />
       </Routes>
     </Template>
   );
