@@ -1,15 +1,16 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import AboutUs from "./pages/AboutUs";
-import Menu from "./components/Menu/Menu";
+import Profile from "./pages/Profile";
+import Template from "./templates/Template/Template";
 function App() {
   return (
-    <>
-      <Menu />
+    <Template>
       <Routes>
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/perfil" element={<Profile />} />
       </Routes>
-    </>
+    </Template>
   );
 }
 
