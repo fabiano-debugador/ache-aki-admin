@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Input from "../components/form/Input";
+import Form from "../components/shared/Form";
 import Modal from "../components/shared/Modal";
 import Table from "../components/shared/Table";
 import { IProfile } from "../model/profile";
@@ -7,11 +8,19 @@ import profileDate from "../services/profile";
 
 const Profile: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const closeModal = () => setIsModalOpen(false);
+
   const openModal = () => setIsModalOpen(true);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [profiles, setProfiles] = useState<IProfile[] | undefined>();
+  const [profiles, setProfiles] = useState<IProfile[]>([]);
+
+  const closeModal = () => {
+    console.log(name);
+    setName("");
+    setDescription("");
+    setIsModalOpen(false);
+    console.log(name);
+  };
 
   const GetProfileDate = () => {
     try {
@@ -24,12 +33,9 @@ const Profile: React.FC = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const name = e.target[0].value;
-    const description = e.target[1].value;
-
     //here is Okay
     const values = { name, description };
-    // console.log(console.table(values));
+    console.log(console.table(values));
   };
 
   useEffect(() => {
@@ -38,14 +44,13 @@ const Profile: React.FC = () => {
 
   return (
     <>
-      <h1>Profile</h1>
       <button type="button" onClick={openModal}>
         show Modal
       </button>
-      <Table header={["Name", "description"]} body={[profiles]} />
+      <Table header={["Nome", "Descrição", "Ação"]} body={[profiles]} />
 
       <Modal handleClose={closeModal} show={isModalOpen}>
-        <form onSubmit={handleSubmit}>
+        <Form closeModal={closeModal} handleSubmit={handleSubmit}>
           <Input
             type="text"
             name="name"
@@ -60,8 +65,7 @@ const Profile: React.FC = () => {
             label="Description"
             onChange={(e: any) => setDescription(e.target.value)}
           />
-          <button type="submit">Save</button>
-        </form>
+        </Form>
       </Modal>
     </>
   );

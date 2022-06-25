@@ -8,9 +8,11 @@ const Modal: React.FC<IModal> = ({ handleClose, show, children }) => {
     <div className={showHideClassName}>
       <section className="modal-main">
         {children}
-        <button type="button" onClick={handleClose}>
-          Close
-        </button>
+        <div className="modal-button-close">
+          <button type="button" onClick={handleClose}>
+            Close
+          </button>
+        </div>
       </section>
     </div>
   );
