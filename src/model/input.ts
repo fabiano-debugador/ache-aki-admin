@@ -4,4 +4,5 @@ export interface IInput {
   id: string;
   onChange: any;
   label: string;
+  values: any;
 }
