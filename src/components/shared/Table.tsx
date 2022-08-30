@@ -3,28 +3,44 @@ import Card from "./Card";
 interface ITable {
   header: Array<string>;
   body: Array<any>;
+  showColumns: Array<any>;
+  setAction: (action: boolean) => void;
+  setProfile: (profile: any) => void;
 }
 
-const handleEdit = (e: any) => {
-  e.preventDefault();
-  console.log(e.target);
+const handleEdit = (
+  field: any,
+  setAction: (action: boolean) => void,
+  setProfile: (profile: any) => void
+) => {
+  setProfile(field);
+  setAction(true);
 };
 
-const handleDelete = (e: any) => {
-  e.preventDefault();
-  console.log(e.target);
+const handleDelete = (
+  field: any,
+  setAction: (action: boolean) => void,
+  setProfile: (profile: any) => void
+) => {
+  const data = { ...field, action: "delete" };
+
+  setProfile(data);
+  setAction(true);
 };
 
-const mountRow = (data: Array<string>) => {
+const mountRow = (
+  data: any,
+  datas: any,
+  setAction: (action: boolean) => void,
+  setProfile: (profile: any) => void
+) => {
   const row = [data];
 
-  const columnRow = row.map((rowVal: string[], key: number) => {
+  const columnRow = row.map((rowVal: string[]) => {
     return Object.values(rowVal);
   });
 
-  console.log(columnRow);
   const resultRow = columnRow.map((col: string[]) => {
-    col.shift();
     const columns = col.map((c) => {
       return <td>{c}</td>;
     });
@@ -32,10 +48,16 @@ const mountRow = (data: Array<string>) => {
       <>
         {columns}
         <td>
-          <button onClick={handleEdit} type="button">
+          <button
+            onClick={() => handleEdit(datas, setAction, setProfile)}
+            type="button"
+          >
             Editar
           </button>
-          <button onClick={handleDelete} type="button">
+          <button
+            onClick={() => handleDelete(datas, setAction, setProfile)}
+            type="button"
+          >
             Deletar
           </button>
         </td>
@@ -45,11 +67,26 @@ const mountRow = (data: Array<string>) => {
   return resultRow;
 };
 
-const Table: React.FC<ITable> = ({ header, body }) => {
-  const bodyFIelds = (bodys: Array<any>) => {
+const Table: React.FC<ITable> = ({
+  header,
+  body,
+  showColumns,
+  setAction,
+  setProfile,
+}) => {
+  const bodyFields = (bodys: Array<any>) => {
     if (bodys[0]) {
-      const field = body[0].map((field: any) => {
-        return <tr>{mountRow(field)}</tr>;
+      const field = body[0].map((field: any, key: number) => {
+        const filtered = Object.keys(field)
+          .filter((key) => showColumns.includes(key))
+          .reduce((obj, key) => {
+            return {
+              ...obj,
+              [key]: field[key],
+            };
+          }, {});
+
+        return <tr>{mountRow(filtered, field, setAction, setProfile)}</tr>;
       });
       return field;
     }
@@ -64,7 +101,7 @@ const Table: React.FC<ITable> = ({ header, body }) => {
               return <th key={key}>{head}</th>;
             })}
           </thead>
-          <tbody>{bodyFIelds(body)}</tbody>
+          <tbody>{bodyFields(body)}</tbody>
         </table>
       </div>
     </Card>

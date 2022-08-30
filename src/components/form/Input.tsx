@@ -1,12 +1,15 @@
-import { useState } from "react";
 import { IInput } from "../../model/input";
 
-const Input: React.FC<IInput> = ({ type, id, name, label, onChange }) => {
-  const [value, setValue] = useState("");
-
+const Input: React.FC<IInput> = ({
+  type,
+  id,
+  name,
+  label,
+  onChange,
+  values,
+}) => {
   const handleName = (e: any) => {
     onChange(e);
-    setValue(e.target.value);
   };
 
   return (
@@ -18,7 +21,7 @@ const Input: React.FC<IInput> = ({ type, id, name, label, onChange }) => {
         type={type}
         id={id}
         name={name}
-        value={value}
+        value={values}
         onChange={handleName}
       />
     </div>
