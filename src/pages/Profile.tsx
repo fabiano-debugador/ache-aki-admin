@@ -9,9 +9,6 @@ import { Api } from "../services/api";
 import { omit } from "../utils/omit";
 
 const Profile: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const openModal = () => setIsModalOpen(true);
   const emptyProfile = {
     id: "",
     idLogin: "",
@@ -26,21 +23,24 @@ const Profile: React.FC = () => {
     point: "",
     vote: "",
   };
+
   const [profile, setProfile] = useState<any>(emptyProfile);
   const [action, setAction] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const openModal = () => setIsModalOpen(true);
 
   const handleInput = (e: any, name: string) => {
-    let val = "";
+    const value = e.target.value;
+    const profileValue = { ...profile };
+    profileValue[name] = value;
+    setProfile(profileValue);
+  };
 
-    if (e.target) {
-      val = e.target.value;
-    }
-
-    const pp = { ...profile };
-    console.log(pp[name]);
-    pp[name] = val;
-
-    setProfile(pp);
+  const handleUpload = (e: any, name: string) => {
+    const value = e.target.files[0];
+    const profileValue = { ...profile };
+    profileValue[name] = value;
+    setProfile(profileValue);
   };
 
   const closeModal = () => {
@@ -53,7 +53,6 @@ const Profile: React.FC = () => {
     "profiles",
     async () => {
       const response = await Api.get("profiles");
-
       return response.data.profiles;
     },
     {
@@ -64,16 +63,19 @@ const Profile: React.FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!profile.id) {
-      console.log("save");
       Api.post("profiles", profile);
     } else {
       if (!profile.action) {
+        console.log(profile);
         const datas = omit(profile, "id", "idLogin");
-        Api.put(`profiles/${profile.id}`, datas);
-        console.log("update");
+        Api.put(`profiles/${profile.id}`, datas, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
       } else {
         Api.delete(`profiles/${profile.id}`);
-        console.log("delete");
       }
     }
   };
@@ -93,14 +95,6 @@ const Profile: React.FC = () => {
 
       <Modal handleClose={closeModal} show={isModalOpen || action}>
         <Form closeModal={closeModal} handleSubmit={handleSubmit}>
-          <Input
-            type="text"
-            name="idLogin"
-            id="idLogin"
-            label="idLogin"
-            values={profile.idLogin}
-            onChange={(e: any) => handleInput(e, "idLogin")}
-          />
           <Input
             type="text"
             name="name"
@@ -134,21 +128,19 @@ const Profile: React.FC = () => {
             values={profile.titleSlug}
             onChange={(e: any) => handleInput(e, "titleSlug")}
           />
-          <Input
-            type="text"
+          <input
+            type="file"
             name="imageProfile"
             id="imageProfile"
-            label="imageProfile"
-            values={profile.imageProfile}
-            onChange={(e: any) => handleInput(e, "imageProfile")}
+            // values={profile.imageProfile}
+            onChange={(e: any) => handleUpload(e, "imageProfile")}
           />
-          <Input
-            type="text"
+          <input
+            type="file"
             name="banner"
             id="banner"
-            label="banner"
-            values={profile.banner}
-            onChange={(e: any) => handleInput(e, "banner")}
+            // values={profile.banner}
+            onChange={(e: any) => handleUpload(e, "banner")}
           />
           <Input
             type="text"
