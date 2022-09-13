@@ -10,10 +10,11 @@ function App() {
     <Template>
       <Routes>
         <Route element={<ProtectedRoutes />}>
+          <Route path="/" element={<Profile />} />
           <Route path="/perfil" element={<Profile />} />
+          <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/categoria-produtos" element={<ProductCategory />} />
         </Route>
-        <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/categoria-produtos" element={<ProductCategory />} />
       </Routes>
     </Template>
   );

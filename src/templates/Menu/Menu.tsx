@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider/useAuth";
 
 const Menu: React.FC = () => {
+  const auth = useAuth();
   return (
     <div className="menu">
       <ul>
@@ -65,7 +67,11 @@ const Menu: React.FC = () => {
         <li>
           <Link to="/estatisticas">Estatísticas</Link>
         </li>
-        <li>Sair</li>
+        <li>
+          <button type="button" onClick={auth.logout}>
+            Sair
+          </button>
+        </li>
       </ul>
     </div>
   );
