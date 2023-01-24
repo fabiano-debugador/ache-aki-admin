@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import Input from "../components/form/Input";
 import Form from "../components/shared/Form";
@@ -10,6 +10,9 @@ import { Api } from "../services/api";
 import { queryClient } from "../services/queryClient";
 import { omit } from "../utils/omit";
 
+import { DataTable } from 'primereact/datatable';
+import { Column } from "primereact/column";
+
 const ProductCategory: React.FC = () => {
   const id = getUserLocalStorage()?.id;
   const emptyCategory = {
@@ -18,6 +21,8 @@ const ProductCategory: React.FC = () => {
     categorySlug: "",
     image: "",
   };
+
+  const dt = useRef(null);
 
   const [category, setCategory] = useState<any>(emptyCategory);
   const [action, setAction] = useState<boolean>(false);
@@ -105,9 +110,27 @@ const ProductCategory: React.FC = () => {
     listOfCategories
   );
 
+  const categoryBodyTemplate = (rowData: any) => {
+    return rowData.category
+  }
+
+  const categorySlugTemplate = (rowData: any) => {
+    return rowData.categorySlug
+  }
+
+  const imageBodyTemplate = (rowData: any) => {
+    return rowData.image
+  }
+
   return (
     <>
-      <button type="button" onClick={openModal}>
+      <DataTable value={data} ref={dt}>
+        <Column field="category" header="Category" body={categoryBodyTemplate} />
+        <Column field="categorySlug" header="Category Slug" body={categorySlugTemplate} />
+        <Column field="image" header="Image" body={imageBodyTemplate} />
+      </DataTable>
+
+      {/* <button type="button" onClick={openModal}>
         show Modal
       </button>
       <Table
@@ -144,7 +167,7 @@ const ProductCategory: React.FC = () => {
             onChange={(e: any) => handleUpload(e, "image")}
           />
         </Form>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
