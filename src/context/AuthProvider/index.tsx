@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Api } from "../../services/api";
 import { IAuthProvider, IContext, IUser } from "./types";
 import { getUserLocalStorage, loginRequest, setUserLocalStorage } from "./util";
@@ -8,6 +8,7 @@ const AuthContext = createContext<IContext>({} as IContext);
 
 const AuthProvider = ({ children }: IAuthProvider) => {
   const [user, setUser] = useState<IUser | null>();
+  // const navegation = useNavigate();
 
   useEffect(() => {
     const user = getUserLocalStorage();
@@ -20,18 +21,19 @@ const AuthProvider = ({ children }: IAuthProvider) => {
   const authenticate = async (email: string, password: string) => {
     const response = await loginRequest(email, password);
 
-    const id = await getUserId(email);
-    const payload = { token: response.token, id };
+    if (response) {
+      const id = await getUserId(email);
+      const payload = { token: response.token, id };
 
-    setUser(payload);
-    setUserLocalStorage(payload);
-    <Navigate to="/" replace />;
+      setUser(payload);
+      setUserLocalStorage(payload);
+    }
   };
 
   const logout = () => {
     setUser(null);
     setUserLocalStorage(null);
-    <Navigate to="/login" replace />;
+    // navegation("/login");
   };
 
   const getUserId = async (email: string) => {
